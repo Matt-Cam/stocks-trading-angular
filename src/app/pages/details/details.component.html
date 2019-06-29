@@ -1,0 +1,11 @@
+<section class="stock-list">
+  <div class="stock-list__grid">
+    <app-stock-details [symbol]="selectedSymbol"></app-stock-details>
+  </div>
+</section>
+<section>
+  <app-stock-graph [symbol]="selectedSymbol" [isHomePage]=false></app-stock-graph>
+</section>
+<div>
+<app-transaction-grid [symbol]="selectedSymbol"></app-transaction-grid>
+</div>

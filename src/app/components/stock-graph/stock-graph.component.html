@@ -1,0 +1,13 @@
+<section class="stock-graph">
+    <h2 class="stock-list__title">
+        Symbol: {{ symbol }}
+        <select class="modal__dropdown" [(ngModel)]="graphViewMode" (change)="onChange($event.target.value)">
+            <option value="today">Today</option>
+            <option value="yearly">Yearly</option>
+        </select>
+<a *ngIf= "isHomePage" class="stock-graph__link" href="details/{{symbol}}">Details</a>
+    </h2>
+
+<div id="chartContainer" class="stock-graph__container" ></div>
+</section>
+
