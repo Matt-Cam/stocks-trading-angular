@@ -45,17 +45,7 @@ export class StockGraphComponent implements OnInit, AfterViewInit, OnChanges {
     };
     this.options.series = [];
     this.stockService.getStockPrices(stockSymbol, mode).subscribe((x: { detailed: Array<any>; aggregated: Array<any> }) => {
-      /*
-      OLD CODE
-      x.aggregated.forEach((element: { date: Date; price: number }) => {
-        tempData.aggregated.push(element);
-      });
-      x.detailed.forEach((element: { date: Date; price: number }) => {
-        tempData.detailed.push(element);
-      });
-      OLD CODE
-*/
-tempData = x;
+      tempData = x;
       //push detailed series onto the series array
       this.options.series.push({
         name: 'detailed',
@@ -77,14 +67,11 @@ tempData = x;
           };
         })
       });
-  
+
       //place the chart in our HTML
       Highcharts.chart('chartContainer', this.options);
     });
-
   } //end of updateStockPrices()
-
-
 
   //initialize our Options object to be passed to HighCharts
   initializeOptionsObject() {
