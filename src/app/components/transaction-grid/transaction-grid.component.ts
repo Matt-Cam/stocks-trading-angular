@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, ɵConsole } from '@angular/core';
 import { TransactionService } from 'src/app/services/transaction.service';
 import { TransactionInfo } from 'src/app/models/transactionInfo';
+import { takeUntil } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-transaction-grid',
@@ -11,6 +13,7 @@ export class TransactionGridComponent implements OnInit {
   @Input() symbol: string = '';
 
   transactionList: Array<TransactionInfo> = [];
+
 
   columnDefs = [
     { headerName: 'Date', field: 'date', sortable: true, filter: true },
@@ -48,4 +51,5 @@ export class TransactionGridComponent implements OnInit {
       this.transactionList = data;
     });
   }
+
 }

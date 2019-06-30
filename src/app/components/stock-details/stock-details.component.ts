@@ -41,7 +41,6 @@ export class StockDetailsComponent implements OnInit, OnDestroy {
 
   fetchData() {
     let result = this.userService.getAllocationsForAsset(this.symbol);
-    console.log(result);
 
     if (result.data) {
       this.amount = result.data.amount;
@@ -82,7 +81,7 @@ export class StockDetailsComponent implements OnInit, OnDestroy {
 
   openBuySellPopup(side: string) {
     this.transactionInfo = new TransactionInfo({ side: side, symbol: this.symbol, amount: 10 });
-    
+
     this.buySellVisible = true;
   }
 }
