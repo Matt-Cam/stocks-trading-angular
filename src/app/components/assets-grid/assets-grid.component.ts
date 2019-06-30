@@ -13,7 +13,6 @@ import { Subject } from 'rxjs';
 })
 export class AssetsGridComponent implements OnInit {
   rowData: Array<any>;
-  recentTicks: any;
   private trash = new Subject();
 
   constructor(private stockService: StocksService, private userService: UserService) {}
@@ -37,86 +36,38 @@ export class AssetsGridComponent implements OnInit {
   fetchData() {
     let allocationData;
 
-    let result: {data: Array<any>, subscription: Subject<any>} = this.userService.getAllocations();
+    let result: { data: Array<any>; subscription: Subject<any> } = this.userService.getAllocations();
 
     // always assign the data
     allocationData = result.data;
     this.addPrices(allocationData);
-    //merge tempRowData with prices and assign new array to rowData
-    // ...
-
 
     result.subscription.subscribe((data) => {
       allocationData = data.data;
       this.addPrices(allocationData);
-      
-      //merge tempRowData with prices and assign new array to rowData
-      // ...
-      
     });
-
-
-
-    /*//local arrays
-    let allocationData, currentTicks;
-    //get allocations
-    this.userService.getAllocations().subscription.subscribe( x => {
-      allocationData = x.data 
-      console.log('allocationData is:');
-      console.log(allocationData);
-      
-      //get stock prices
-      this.stockService.getStockList().subscribe((data: StockInfo[]) => {
-        //map a simplified version of data object to currentTicks{}
-        currentTicks = data.map(x => { 
-          return { 
-            name: x.lastTick.stock, 
-            price: x.lastTick.price.toFixed(2) 
-          } 
-        });
-        console.log('currentTicks is:');
-        console.log(currentTicks);
-
-      //after mergeArrays, allocationData will now have ticker price
-      this.mergeArrays(allocationData, currentTicks);
-      
-      //now add the value of asset by multiplying
-      allocationData.forEach(element => {
-        element.total = (element.amount * element.price).toFixed(2);
-      });
-      console.log(allocationData);
-      this.rowData = allocationData; 
-      });
-    });
-*/
   }
 
-
-  addPrices(allocationData){
+  addPrices(allocationData) {
     let currentTicks;
     this.stockService.getStockList().subscribe((data: StockInfo[]) => {
       //map a simplified version of data object to currentTicks{}
-      currentTicks = data.map(x => { 
-        return { 
-          name: x.lastTick.stock, 
-          price: x.lastTick.price.toFixed(2) 
-        } 
+      currentTicks = data.map((x) => {
+        return {
+          name: x.lastTick.stock,
+          price: x.lastTick.price.toFixed(2)
+        };
       });
-      console.log('currentTicks is:');
-      console.log(currentTicks);
 
-    //after mergeArrays, allocationData will now have ticker price
-    this.mergeArrays(allocationData, currentTicks);
-    
-    //now add the value of asset by multiplying
-    allocationData.forEach(element => {
-      element.total = (element.amount * element.price).toFixed(2);
+      //after mergeArrays, allocationData will now have ticker price
+      this.mergeArrays(allocationData, currentTicks);
+
+      //now add the value of asset by multiplying
+      allocationData.forEach((element) => {
+        element.total = (element.amount * element.price).toFixed(2);
+      });
+      this.rowData = allocationData;
     });
-    this.rowData = allocationData; 
-    });
-  }
-  ngAfterViewInit() {
-    this.fetchData();
   }
 
   mergeArrays(allocs, currTicks) {
