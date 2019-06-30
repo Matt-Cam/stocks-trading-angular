@@ -35,20 +35,27 @@ export class AssetsGridComponent implements OnInit {
   }
 
   fetchData() {
-    var tempRowData;
-    let result = this.userService.getAllocations();
-    if (result.data.length > 0) {
-      this.rowData = result.data;
+    let allocationData;
+
+    let result: {data: Array<any>, subscription: Subject<any>} = this.userService.getAllocations();
+
+    // always assign the data
+    allocationData = result.data;
+    this.addPrices(allocationData);
+    //merge tempRowData with prices and assign new array to rowData
+    // ...
+
+
+    result.subscription.subscribe((data) => {
+      allocationData = data.data;
+      this.addPrices(allocationData);
+      
       //merge tempRowData with prices and assign new array to rowData
       // ...
-    } 
-    else {
-      result.subscription.subscribe((data) => {
-        this.rowData = data.data;
-        //merge tempRowData with prices and assign new array to rowData
-        // ...
-      });
-    }
+      
+    });
+
+
 
     /*//local arrays
     let allocationData, currentTicks;
@@ -84,6 +91,30 @@ export class AssetsGridComponent implements OnInit {
 */
   }
 
+
+  addPrices(allocationData){
+    let currentTicks;
+    this.stockService.getStockList().subscribe((data: StockInfo[]) => {
+      //map a simplified version of data object to currentTicks{}
+      currentTicks = data.map(x => { 
+        return { 
+          name: x.lastTick.stock, 
+          price: x.lastTick.price.toFixed(2) 
+        } 
+      });
+      console.log('currentTicks is:');
+      console.log(currentTicks);
+
+    //after mergeArrays, allocationData will now have ticker price
+    this.mergeArrays(allocationData, currentTicks);
+    
+    //now add the value of asset by multiplying
+    allocationData.forEach(element => {
+      element.total = (element.amount * element.price).toFixed(2);
+    });
+    this.rowData = allocationData; 
+    });
+  }
   ngAfterViewInit() {
     this.fetchData();
   }
