@@ -6,6 +6,7 @@ import { UserService } from 'src/app/services/user.service';
 import { StocksService } from 'src/app/services/stocks.service';
 import { TransactionInfo } from '../../models/transactionInfo';
 import { StockTick } from 'src/app/models/stock';
+import { ClassGetter } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-stock-details',
@@ -17,7 +18,6 @@ export class StockDetailsComponent implements OnInit, OnDestroy {
   @Input() showRemove: boolean = false;
   @Input() symbol: string = '';
   @Output() stockSelected: EventEmitter<any> = new EventEmitter();
-
 
   private trash = new Subject();
   currentPrice: number;
@@ -41,6 +41,8 @@ export class StockDetailsComponent implements OnInit, OnDestroy {
 
   fetchData() {
     let result = this.userService.getAllocationsForAsset(this.symbol);
+    console.log(result);
+
     if (result.data) {
       this.amount = result.data.amount;
     }
@@ -52,7 +54,6 @@ export class StockDetailsComponent implements OnInit, OnDestroy {
         this.amount = null;
       }
     });
-
 
     this.stockService
       .getStockPriceSubscription(this.symbol)
@@ -68,7 +69,6 @@ export class StockDetailsComponent implements OnInit, OnDestroy {
 
   onRemove() {
     this.removeClick.emit(this.symbol);
-  
   }
 
   onStockClick(symbol) {
@@ -82,6 +82,7 @@ export class StockDetailsComponent implements OnInit, OnDestroy {
 
   openBuySellPopup(side: string) {
     this.transactionInfo = new TransactionInfo({ side: side, symbol: this.symbol, amount: 10 });
+    
     this.buySellVisible = true;
   }
 }
