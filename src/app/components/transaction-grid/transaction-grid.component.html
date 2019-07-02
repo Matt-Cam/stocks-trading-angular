@@ -1,11 +1,11 @@
 <section class="stock-transactions full-width">
-<h2>Refresh button is temporary. Need to update list after transaction.</h2>
-<button (click)="refreshTransactionList()">REFRESH LIST</button>
-  <ag-grid-angular style=" width: 1200px; height: 500px;" class="ag-theme-balham" [rowData]="transactionList"
-    [columnDefs]="columnDefs">
+  <h2>Refresh button is temporary. Need to update list after transaction.</h2>
+  <h2>{{ transactionListLength }}</h2>
+  <button (click)="refreshTransactionList()">REFRESH LIST</button>
+  <ag-grid-angular style=" width: 1200px; height: 500px;" class="ag-theme-balham" [rowData]="transactionList" [columnDefs]="columnDefs">
   </ag-grid-angular>
 
-<!--
+  <!--
   <div class="stock-transactions__grid-row">
     <div class="stock-transactions__grid-cell">
       <span class="stock-transactions__grid-text stock-transactions__grid-text--white">Transaction ID</span>

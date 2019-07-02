@@ -3,7 +3,6 @@ import { TransactionService } from 'src/app/services/transaction.service';
 import { TransactionInfo } from 'src/app/models/transactionInfo';
 import { takeUntil } from 'rxjs/operators';
 
-
 @Component({
   selector: 'app-transaction-grid',
   templateUrl: './transaction-grid.component.html',
@@ -13,7 +12,7 @@ export class TransactionGridComponent implements OnInit {
   @Input() symbol: string = '';
 
   transactionList: Array<TransactionInfo> = [];
-
+  transactionListLength: number;
 
   columnDefs = [
     { headerName: 'Date', field: 'date', sortable: true, filter: true },
@@ -47,9 +46,30 @@ export class TransactionGridComponent implements OnInit {
     this.transactionList = null;
   }
   fetchData() {
-    this.transactionService.getTransactionList(this.symbol).subscribe((data) => {
-      this.transactionList = data;
+    let result;
+    if (this.symbol) {
+      console.log('symbol defined');
+      result = this.transactionService.getTransactionsForSymbol(this.symbol);
+      console.log('this is the result');
+      console.log(result);
+    } else {
+      console.log('symbol undefined');
+      result = this.transactionService.getTransactions();
+      console.log('this is the result');
+      console.log(result);
+      
+    }
+    
+    if(result.data){
+    this.transactionList = result.data;
+  }
+  
+    result.subscription.subscribe((data) => {
+      console.log('hello');
+ 
+      this.transactionList = data.data.slice(0);
+      this.transactionListLength = this.transactionList.length;
+ 
     });
   }
-
 }

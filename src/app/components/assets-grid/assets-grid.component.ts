@@ -39,6 +39,7 @@ export class AssetsGridComponent implements OnInit {
     let result: { data: Array<any>; subscription: Subject<any> } = this.userService.getAllocations();
 
     // always assign the data
+
     allocationData = result.data;
     this.addPrices(allocationData);
 

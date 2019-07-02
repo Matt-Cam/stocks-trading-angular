@@ -4,13 +4,13 @@ import { TransactionInfo } from '../models/transactionInfo';
 import { HttpClient } from '@angular/common/http';
 import { Subject, Observable } from 'rxjs';
 import { UserService } from './user.service';
-import { map, filter } from 'rxjs/operators';
+import { map, filter as rxFilter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TransactionService {
-  transactions: Array<any>;
+  transactions: Array<TransactionInfo>;
   private transactionSubscription = new Subject<any>();
 
   get transactionUrl() {
@@ -39,19 +39,32 @@ export class TransactionService {
     }
   }
 
-  getTransactionList(symb?: string): Observable<Array<TransactionInfo>> {
-    if (symb) {
-      return this.http.get(this.transactionUrl).pipe(
-        map((x: Array<TransactionInfo>) => {
-          return x.map((s) => new TransactionInfo(s)).filter((z) => z.symbol === symb);
-        })
-      );
-    } else {
-      return this.http.get(this.transactionUrl).pipe(
-        map((x: Array<TransactionInfo>) => {
-          return x.map((s) => new TransactionInfo(s));
-        })
-      );
+  getTransactions(): { data: Array<TransactionInfo>; subscription: Subject<any> } {
+    if (!this.transactions) {
+      this.http.get(this.transactionUrl).subscribe((data: Array<TransactionInfo>) => {
+        this.transactions = data;
+        this.transactionSubscription.next({
+          data: this.transactions
+        });
+      });
     }
+    return {
+      subscription: this.transactionSubscription,
+      data: this.transactions
+    };
   }
+
+  getTransactionsForSymbol(symbol) {
+    let subscription = this.getTransactions().subscription.pipe(
+      rxFilter((response: any) => {
+        return response.symbol === symbol;
+      })
+    );
+    return {
+      subscription: subscription,
+      data: this.transactions
+    };
+  }
+
+
 }
